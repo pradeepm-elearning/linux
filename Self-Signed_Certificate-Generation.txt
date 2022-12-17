@@ -1,0 +1,167 @@
+------------------
+sudo openssl pkcs12 -export -in /etc/letsencrypt/live/ccevclienttest.ccen.in/fullchain.pem -inkey /etc/letsencrypt/live/ccevclienttest.ccen.in/privkey.pem -out ccevclienttest.p12 -name evclienttest
+keytool -importkeystore -deststorepass cc123456 -destkeypass cc123456 -destkeystore ccevclienttest.jks -srckeystore ccevclienttest.p12 -srcstoretype PKCS12 -srcstorepass cc123456 -alias evclienttest
+-------------------
+keytool -import -trustcacerts -keystore /app/ccengage/opt/java/jdk1.8.0_60/jre/lib/security/cacerts -storepass cc123456 -noprompt -alias tomcat -file /tmp/test.jks
+-------------------
+cd $JRE_HOME/bin
+keytool -genkey -alias evsrv -keyalg RSA -keystore /home/richard/Documents/SSL/evsrv.jks
+keytool -genkey -alias evclient -keyalg RSA -keystore /home/richard/Documents/SSL/evclient.jks
+----------------------
+cd $JRE_HOME/bin
+./keytool -genkey -alias tomcat -keyalg RSA -keystore /tmp/test.jks
+----------------------
+keytool -genkey -alias tomcat -keyalg RSA -keystore /app/ccengage/opt/tomcat/apache-tomcat-7.0.78/certs/luluuat.keystore
+keytool -certreq -keyalg RSA -alias tomcat -file luluuat.csr -keystore luluuat.keystore
+----------------------
+sudo openssl pkcs12 -export -in /etc/letsencrypt/live/ccedemo.customercentria.in/fullchain.pem -inkey /etc/letsencrypt/live/ccedemo.customercentria.in/privkey.pem -out twbank_demo.p12 -name tomcat
+keytool -importkeystore -deststorepass cc123456 -destkeypass cc123456 -destkeystore twbank_demo.jks -srckeystore twbank_demo.p12 -srcstoretype PKCS12 -srcstorepass cc123456 -alias tomcat
+-----------------------
+sudo openssl pkcs12 -export -in /etc/letsencrypt/live/ccedemo.customercentria.in/fullchain.pem -inkey /etc/letsencrypt/live/ccedemo.customercentria.in/privkey.pem -out twbank_demo.p12 -name tomcat
+keytool -importkeystore -deststorepass cc123456 -destkeypass cc123456 -destkeystore twbank_demo.jks -srckeystore twbank_demo.p12 -srcstoretype PKCS12 -srcstorepass cc123456 -alias tomcat
+------------------------
+
+
+
+
+./keytool -genkey -alias tomcat -keyalg RSA -keystore /tmp/test.jks
+keytool -import -trustcacerts -keystore /app/ccengage/opt/java/jdk1.8.0_60/jre/lib/security/cacerts -storepass changeit -noprompt -alias tomcat -file /tmp/test.jks
+
+
+-------------------------
+
+openssl req -new -sha256 -nodes -newkey rsa:4096 -keyout evtest.key -out evtest.csr
+openssl req -x509 -sha256 -nodes -newkey rsa:4096 -keyout evtest.key -days 365 -out evtest.pem
+openssl pkcs12 -export -in /etc/letsencrypt/live/ccedemo.customercentria.in/fullchain.pem -inkey /etc/letsencrypt/live/ccedemo.customercentria.in/privkey.pem -out twbank_demo.p12 -name tomcat
+
+
+
+openssl req -new -sha256 -nodes -newkey rsa:4096 -keyout CA.key -out CA.csr
+openssl x509 -req -sha256 -extfile x509.ext -extensions ca -in CA.csr -signkey CA.key -days 1095 -out CA.pem
+
+
+
+--------------------------------------------------
+1) Generate key with AES256
+---------------------------------------------
+openssl genrsa -aes256 -out titanev.key 1024
+---------------------------------------------
+titanev.key: titanev
+
+2) Generate cert request for CA
+----------------------------------------------------------------
+openssl req -x509 -sha256 -new -key titanev.key -out titanev.csr
+----------------------------------------------------------------
+
+3) Generate self signed expiry-time 10 years
+-------------------------------------------------------------------------------------
+openssl x509 -sha256 -days 3652 -in titanev.csr -signkey titanev.key -out titanev.crt
+-------------------------------------------------------------------------------------
+
+4) Use a program like KeyStoreExplorer to import the pair (private key and selfsigned certificate) in a new JKS
+This works but I'd like to implement the last step without using a GUI.
+I know how to import the self signed certificate only:
+
+// create the keystore and import the public key. THIS WILL NOT IMPORT THE PRIVATE KEY SO THE KEYSTORE CAN'T BE USED ON THE SERVER TO MAKE THE TLS CONNECTION
+-----------------------------------------------------------------------------
+keytool -import -alias tomcat -file titanev.crt -keystore titanev.jks
+-----------------------------------------------------------------------------
+Enter keystore password: titanev
+
+# Create PKCS12 keystore from private key and public certificate.
+openssl pkcs12 -export -name myservercert -in selfsigned.crt -inkey server.key -out keystore.p12
+---------------------------------------------------------------------------------------------
+openssl pkcs12 -export -name tomcat -in titanev.crt -inkey titanev.key -out titanev.p12
+---------------------------------------------------------------------------------------------
+Enter pass phrase for titanev.key: titanev
+Enter Export Password: titanev
+Verifying - Enter Export Password: titanev
+
+# Convert PKCS12 keystore into a JKS keystore
+keytool -importkeystore -destkeystore mykeystore.jks -srckeystore keystore.p12 -srcstoretype pkcs12 -alias myservercert
+------------------------------------------------------------------------------------------------------------------
+keytool -importkeystore -destkeystore titanev.jks -srckeystore titanev.p12 -srcstoretype pkcs12 -alias tomcat
+------------------------------------------------------------------------------------------------------------------
+Enter destination keystore password: titanev
+Enter source keystore password: titanev
+Existing entry alias titanevcert exists, overwrite? [no]:  yes
+
+keytool -list -v -keystore titanev.jks
+
+
+===================================================================================================================
+
+keytool -import -alias 2ca4ff76b946c324cert -file 2ca4ff76b946c324.crt -keystore 2ca4ff76b946c324.jks
+openssl pkcs12 -export -name titanevcert -in titanev.crt -inkey titanev.key -out titanev.p12
+
+===================================================================================================================
+
+keytool -genkeypair -alias titanevo -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore titanevo.p12 -validity 3650
+
+keytool -genkeypair -alias titanevo -keyalg RSA -keysize 2048 -keystore titanevo.jks -validity 3650
+
+keytool -importkeystore -srckeystore titanevo.jks -destkeystore titanevo.p12 -deststoretype pkcs12
+
+
+Export the .der file
+
+keytool -export -alias tomcat -file /tmp/certificate/tomcat.der -keystore /tmp/certificate/titanemailprod.jks
+Convert the .der file to unencrypted PEM (crt file)
+
+openssl x509 -inform der -in tomcat.der -out tomcat.crt
+
+./keytool -genkey -alias tomcat -keyalg RSA -keystore /opt/tomcat7/apache-tomcat-7.0.78/certs/fullertonuat.jks -validity 360
+
+
+
+
+keytool -export -alias tomcat -file /tmp/certificate/titanemailprod.der -keystore /tmp/certificate/titanemailprod.jks
+
+openssl x509 -inform der -in titanemailprod.der -out titanemailprod.crt
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------
+CUSOTMER CENTREIA WEBSITE
+
+
+IMPORTANT NOTES:
+ - Congratulations! Your certificate and chain have been saved at: /etc/letsencrypt/live/customercentria.com/fullchain.pem
+   Your key file has been saved at: /etc/letsencrypt/live/customercentria.com/privkey.pem
+   Your cert will expire on 2020-10-11. To obtain a new or tweaked version of this certificate in the future, simply run certbot again.
+   To non-interactively renew *all* of your certificates, run "certbot renew"
+   
+ - Your account credentials have been saved in your Certbot configuration directory at /etc/letsencrypt.
+   You should make a secure backup of this folder now. This configuration directory will also contain certificates and private keys obtained by Certbot so making regular backups of this folder is ideal.
+ 
+ - If you like Certbot, please consider supporting our work by:
+
+   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to EFF:                    https://eff.org/donate-le
+
+    SSLCertificateFile ssl/56f2a49851ea9017.crt
+    SSLCertificateKeyFile ssl/customercentria.com.key
+
+
+
+keytool -import -alias tomcat -keystore  "/app/ccengage/opt/java/jdk1.8.0_60/jre/lib/security/cacerts" -file titanev.crt
+
+
+-------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------------------------------------------------------------------------------
+openssl genrsa -aes256 -out tcdev.key 1024
+openssl req -x509 -sha256 -new -key tcdev.key -out tcdev.csr
+openssl x509 -sha256 -days 3652 -in tcdev.csr -signkey tcdev.key -out tcdev.crt
+keytool -import -alias tomcat -file tcdev.crt -keystore tcdev.jks
+openssl pkcs12 -export -name tomcat -in tcdev.crt -inkey tcdev.key -out tcdev.p12
+keytool -importkeystore -destkeystore tcdev.jks -srckeystore tcdev.p12 -srcstoretype pkcs12 -alias tomcat
+keytool -import -alias tomcat -keystore  "/spark/jdk1.8.0_60/jre/lib/security/cacerts" -file tcdev.crt
+
+
+
+Exception in thread "main" java.lang.NoSuchMethodError: 'com.mongodb.connection.ConnectionPoolSettings$Builder com.mongodb.connection.ConnectionPoolSettings$Builder.maxWaitQueueSize(int)'
+    at com.mongodb.MongoClientOptions.<init>(MongoClientOptions.java:148)
+    at com.mongodb.MongoClientOptions.<init>(MongoClientOptions.java:56)

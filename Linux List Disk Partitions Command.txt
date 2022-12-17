@@ -1,0 +1,134 @@
+Linux List Disk Partitions Command
+by NIX CRAFT on FEBRUARY 24, 2012 • 6 COMMENTS• LAST UPDATED OCTOBER 3, 2012
+in LINUX
+
+How do I list all hard disk partitions under Linux operating systems?
+
+Usually, your hard disk drive divided into one or more logical disks called partitions. This division is described in the partition table found in sector 0 of the hard disk.
+
+Tutorial details	
+Difficulty	Easy (rss)
+Root privileges	Yes
+Requirements	None
+Estimated completion time	N/A
+The device is usually /dev/sda, /dev/sdb or so. A device name refers to the entire disk and the device name will be as follows:
+/dev/hd* - IDE disks. /dev/hda will be first IDE hard disk, /dev/hdb will be second IDE hard disk, and so on.
+/dev/sd* - SCSI or SATA disks. /dev/sda will be first SATA/SCSI hard disk, /dev/sdb will be second SATA/SCSI hard disk, and so on.
+Warning examples may crash your computerWARNING! These examples may crash your computer if NOT executed with proper care. BE EXTREMELY CAREFUL WITH THE FOLLOWING COMMANDS. ONE TYPING MISTAKE AND ALL YOUR DATA IS LOST.
+lsblk Command
+
+To list all block devices, run:
+# lsblk
+
+Sample outputs:
+
+NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
+sda      8:0    1   558G  0 disk
++-sda1   8:1    1   307M  0 part /boot
++-sda2   8:2    1   250G  0 part /webroot
++-sda3   8:3    1     6G  0 part [SWAP]
++-sda4   8:4    1     1K  0 part
++-sda5   8:5    1 301.7G  0 part /
+sr0     11:0    1  1024M  0 rom
+List Partitions Under Linux
+
+Open a terminal window (select Applications > Accessories > Terminal). Switch to the root user by typing su - and entering the root password, when prompted. Or use sudo command:
+$ su -
+# fdisk -l
+
+OR
+$ sudo fdisk -l
+
+Sample outputs:
+
+Disk /dev/sda: 251.1 GB, 251059544064 bytes
+255 heads, 63 sectors/track, 30522 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x0008fcd3
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sda1   *           1          14      104448   83  Linux
+Partition 1 does not end on cylinder boundary.
+/dev/sda2              14       13068   104857600   83  Linux
+/dev/sda3           13068       13198     1048576   82  Linux swap / Solaris
+/dev/sda4           13198       30523   139163648    5  Extended
+/dev/sda5           13198       30523   139162624   83  Linux
+The -l options shows the partition tables for the specified devices and then exit. If no devices are given, those mentioned in /proc/partitions (if that exists) are used. You can specify device name as follows (in this example list partitions for /dev/sda):
+# fdisk -l
+
+sfdisk Command
+
+The sfdisk command act as a partition table manipulator for Linux. You can use this tool to list partitions too:
+# sfdisk -l /dev/sda
+# sfdisk -lu /dev/sda
+# sfdisk -ls /dev/sda
+
+Sample outputs:
+
+71669760
+Disk /dev/sda: 8922 cylinders, 255 heads, 63 sectors/track
+Units = cylinders of 8225280 bytes, blocks of 1024 bytes, counting from 0
+   Device Boot Start     End   #cyls    #blocks   Id  System
+/dev/sda1   *      0+    104-    105-    838656   83  Linux
+/dev/sda2        104+    235-    131-   1048576   82  Linux swap / Solaris
+/dev/sda3        235+   8922-   8688-  69781504   83  Linux
+/dev/sda4          0       -       0          0    0  Empty
+Where,
+
+-l : List the partitions of a device.
+-s : List the size of a partition.
+-u or -uS or -uB or -uC or -uM : Accept or report in units of sectors (blocks, cylinders, megabytes, respecpively). The default is cylinders, at least when the geometry is known.
+Listing Linux a Partition Size Larger Than 2TB
+
+The fdisk or sfdisk command will not list any partition size larger than 2TB. To solve this problem you need to use GNU parted command with GPT partitions. It supports Intel EFI/GPT partition tables. Partition Table (GPT) is a standard for the layout of the partition table on a physical hard disk. It is a part of the Extensible Firmware Interface (EFI) standard proposed by Intel as a replacement for the outdated PC BIOS, one of the few remaining relics of the original IBM PC. EFI uses GPT where BIOS uses a Master Boot Record (MBR). In this example list partitions on /dev/sdb using the parted command:
+# parted /dev/sdb
+
+Sample outputs:
+
+GNU Parted 2.3
+Using /dev/sdb
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted)
+Set unit type to TB or GB by typing 'unit TB' or 'unit GB' at the (parted) prompt:
+(parted) unit TB
+
+OR
+(parted) unit GB
+
+To list partitions type print command at the (parted) prompt:
+(parted) print
+
+Sample outputs:
+
+Model: ATA ST33000651AS (scsi)
+Disk /dev/sdb: 3001GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Number  Start   End     Size    File system  Name     Flags
+ 1      0.00GB  3001GB  3001GB  ext4         primary
+(parted)
+To exit from parted session type 'quit' at the (parted) prompt:
+(parted) quit
+
+How Do I List All Partitions Layout On All Block Devices?
+
+Pass the -l OR --list option to the parted command to lists partition layout on all block devices:
+# parted -l
+
+Sample outputs:
+
+Show Linux Disk Partitions Command
+Fig.01: Show Linux Disk Partitions With GNU parted Command
+lssci command
+
+Use the lsscsi command to show SCSI devices (or hosts) and their attributes:
+# lsscsi
+
+Sample outputs:
+
+[0:0:0:0]    disk    ATA      TOSHIBA MK5061GS MF00  /dev/sda
+[1:0:0:0]    cd/dvd  MATSHITA BD-RE UJ232A     1.10  /dev/sr0
+[2:0:0:0]    disk    ATA      ST9500420ASG     0004  /dev/sdb
+
+

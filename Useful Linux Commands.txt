@@ -1,0 +1,68 @@
+-------------------------
+To Check Memory in Linux
+-------------------------
+$free -m
+
+$cat /proc/meminfo
+
+$vmstat -s
+
+$top
+
+$dmidecode -t 17
+
+----x----x----x----x----x----x----x----x----
+
++--------------------------+
+|	CHECK IF HDD OR SSD    |
++--------------------------+
+cat /sys/block/sdb/queue/rotational
+	If the Output is 1 - HDD
+	If the Output is 0 - SSD
+
+Information about Storage Device
+sudo lshw -short -C disk
+
+----x----x----x----x----x----x----x----x----
+
+sftp -v -o "ProxyCommand /usr/bin/nc -X connect -x 10.11.12.9:8080 %h %p" user@server.com
+
+ulimit -Hn 16384
+
+-----------------------------
+vi /etc/security/limits.conf
+add below lines at end
+* soft nofile 8192
+* hard nofile 16384
+------------------------------
+
+lsof | awk '{print $4}' | sort | uniq -c | sort -r -n
+lsof | awk '{print $2}' | sort | uniq -c | sort -r -n
+lsof -u appuser | wc -l
+
+------------------------------
+
+vim /etc/systemctl.conf
+fs.file-max = 65000
+
+-------------------------------
+
+cat /proc/sys/fs/file-max
+
+cat /proc/<<PID>>/limits | grep "Max open files"
+
+--------------------------------------------------
+
+
+* soft     nproc          65535
+* hard     nproc          65535
+* soft     nofile         65535
+* hard     nofile         65535
+
+* soft     nproc          65535
+* hard     nproc          65535
+* soft     nofile         65535
+* hard     nofile         65535
+krakend soft     nofile         65535
+krakend hard     nofile         65535
+

@@ -1,0 +1,18 @@
+yum install xorg-x11*
+yum install xterm
+
+vim /etc/ssh/sshd_config
+	X11Forwarding yes
+
+service sshd restart
+
+Install Xming on Windows & run the Xming.
+
+close the Linux console and open the console again. you will see that in home directory, ".Xauthority" file will be created.
+
+test with the below command
+xclock
+
+If you get a clock, then the X11 forwarding is working fine.
+
+Now copy the .Xauthority file to all the user's home directory & change the ownership to the respected user.

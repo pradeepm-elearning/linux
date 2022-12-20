@@ -1,0 +1,88 @@
+--------------------------------
+ SENTRIFUGO INSTALLATION ON AWS
+--------------------------------
+IP ADDRESS : 3.7.124.150
+
+- - - - - - - - - - - - -
+ STEP - 1 : MYSQL SERVER
+- - - - - - - - - - - - -
+REFERENCE : MYSQL - 8 : BINARY INSTALLATION
+ 
+Username : root
+Password : CoE_120ot$43
+
+CREATE DATABASE hrm_data CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE USER 'hrm_user'@'localhost' IDENTIFIED BY 'Hrm@CC$123';
+GRANT ALL PRIVILEGES ON hrm_data.* TO 'hrm_user'@'localhost';
+
+CREATE USER 'hrm_user'@'172.31.10.167' IDENTIFIED BY 'Hrm@CC$123';
+GRANT ALL PRIVILEGES ON hrm_data.* TO 'hrm_user'@'172.31.10.167';
+
+CREATE USER 'hrm_user'@'127.0.0.1' IDENTIFIED BY 'Hrm@CC$123';
+GRANT ALL PRIVILEGES ON hrm_data.* TO 'hrm_user'@'127.0.0.1';
+
+CREATE USER 'hrm_user'@'3.7.124.150' IDENTIFIED BY 'Hrm@CC$123';
+GRANT ALL PRIVILEGES ON hrm_data.* TO 'hrm_user'@'3.7.124.150';
+
+ALTER USER 'hrm_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Hrm@CC$123';
+ALTER USER 'hrm_user'@'172.31.10.167' IDENTIFIED WITH mysql_native_password BY 'Hrm@CC$123';
+ALTER USER 'hrm_user'@'127.0.0.1' IDENTIFIED WITH mysql_native_password BY 'Hrm@CC$123';
+ALTER USER 'hrm_user'@'3.7.124.150' IDENTIFIED WITH mysql_native_password BY 'Hrm@CC$123';
+
+FLUSH PRIVILEGES;
+EXIT;
+
+
+Make few changes in my.cnf file
+[mysqld]
+collation-server = utf8_unicode_ci
+character-set-server = utf8
+default-authentication-plugin = mysql_native_password
+
+[mysql]
+default-character-set=utf
+
+[client]
+default-character-set=utf8
+
+
+
+STEP - 2 : APACHE HTTP SERVER
+------------------------------
+yum install httpd
+
+mv -rv Sentrifugo.zip /var/www/html/
+cd /var/www/html/
+unzip Sentrifugo.zip
+
+Create a configuration file in the path "/etc/httpd/conf.d"
+vim hrms.customercentria.com.conf
+<VirtualHost *:80>
+#    ServerName hrms.customercentria.com
+    ServerName 172.31.10.167
+    DocumentRoot /var/www/html/Sentrifugo
+    <Directory /var/www/html/Sentrifugo>
+        Options Indexes FollowSymLinks MultiViews
+        AllowOverride All
+        Order allow,deny
+        allow from all
+    </Directory>
+</VirtualHost>
+
+
+STEP - 3 : PHP
+---------------
+
+yum install php php-mbstring php-common php-pdo php-mysql php-cli php-mcrypt php-gd
+	
+make changes in /etc/php.ini
+[Pdo]
+extension=pdo.so
+
+[Pdo_mysql]
+extension=pdo_mysql.so
+
+------------------------------
+
+Restart Apache & MySQL Server
+

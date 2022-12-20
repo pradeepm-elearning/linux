@@ -1,0 +1,37 @@
+Step-1:
+mount /dev/sr0 /media/RHEL_DVD/
+
+Step-2:
+cd /media/RHEL_DVD/Packages
+
+Step-3:
+rpm -ivh deltarpm-3.5-0.5.20090913git.el6.x86_64.rpm
+rpm -ivh python-deltarpm-3.5-0.5.20090913git.el6.x86_64.rpm
+rpm -ivh vsftpd-2.2.2-6.el6_0.1.x86_64.rpm
+rpm -ivh createrepo-0.9.8-4.el6.noarch.rpm
+
+Step-4:
+cp -rv /media/RHEL_DVD/Packages /var/ftp/pub
+
+Step-5:
+createrepo /var/ftp/pub/Packages/
+
+Step-6:
+vim /etc/yum.repos.d/rhel_dvd_packages.repo
+	[RHEL_DVD_Packages]
+	name=RHEL-6.2 DVD Packages
+	baseurl=file:///var/ftp/pub/Packages
+	enable=1
+	gpgcheck=0
+
+
+Step-7:
+yum repolist
+
+
+Step-8:
+yum remove java
+
+
+yum list installed
+yum list available

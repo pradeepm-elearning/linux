@@ -1,3 +1,26 @@
+=================================
+*	Linux Important Commands	*
+=================================
+
+to Search a File:
+$sudo find / -name "catalina.sh"
+
+------------x------------x------------x------------x------------x------------x------------x------------
+
+What process using the memory:
+
+$ps -e -o pid,vsz,comm= | sort -n -k 2
+long version:
+ps --everyone --format=pid,vsz,comm= | sort --numeric-sort --key=2
+
+------------x------------x------------x------------x------------x------------x------------x------------
+
+To Find Operating System & Version of Operating System:
+
+$cat /etc/issue
+
+------------x------------x------------x------------x------------x------------x------------x------------
+
 -------------------------
 To Check Memory in Linux
 -------------------------

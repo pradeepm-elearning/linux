@@ -1,0 +1,34 @@
+Installation of FTP Server on Ubuntu 12.04 LTS
+
+$sudo apt-get install vsftpd
+
+Edit the file /etc/vsftpd.conf
+Uncomment the below entries:
+anonymous_enable=Yes
+local_enable=YES
+write_enable=YES
+anon_upload_enable=YES
+save & exit
+
+create a user called "ftpuser".
+$sudo adduser ftpuser
+$sudo passwd ftpuser
+
+add the "ftpuser" user to "ftp" group
+$usermod -a -G ftp ftpuser
+
+$sudo service vsftpd restart
+
+DONE
+
+To test if the FTP is working properly
+login to any windows or Linux terminal.
+Type: ftp
+ftp>open 192.168.1.250
+
+--------------------------------------------------------------------------------------
+For more information refer the below links:
+http://www.liquidweb.com/kb/how-to-install-and-configure-vsftpd-on-ubuntu-12-04-lts/
+https://help.ubuntu.com/12.04/serverguide/ftp-server.html
+https://www.digitalocean.com/community/tutorials/how-to-set-up-vsftpd-on-ubuntu-12-04
+--------------------------------------------------------------------------------------

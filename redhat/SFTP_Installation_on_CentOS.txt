@@ -1,0 +1,55 @@
+ ---------------------------------------------------------------
+|	S F T P   C O N F I G U R A T I O N   O N   C E N T O S		|
+ ---------------------------------------------------------------
+
+CREATE SFTP FOR USER
+--------------------
+sudo vim /etc/ssh/sshd_config
+Match User luludevsftpusr1
+ForceCommand internal-sftp
+PasswordAuthentication yes
+ChrootDirectory /sftp_dir/lmi-dev
+PermitTunnel no
+AllowAgentForwarding no
+AllowTcpForwarding no
+X11Forwarding no
+
+sudo systemctl restart sshd
+sudo mkdir -p /sftp_dir/lmi-dev
+sudo useradd -d /sftp_dir/lmi-dev/luludevsftpusr1 -s /sbin/nologin luludevsftpusr1
+sudo passwd luludevsftpusr1
+sudo chown root:luludevsftpusr1 /sftp_dir/lmi-dev/luludevsftpusr1
+sudo chmod 750 /sftp_dir/lmi-dev/luludevsftpusr1
+
+
+-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x
+
+
+CREATE SFTP FOR GROUP
+---------------------
+sudo vim /etc/ssh/sshd_config
+Match Group GROUPNAME
+ForceCommand internal-sftp
+PasswordAuthentication yes
+ChrootDirectory /engage/sftp/PROJECT_NAME
+PermitTunnel no
+AllowAgentForwarding no
+AllowTcpForwarding no
+X11Forwarding no
+
+sudo systemctl restart sshd
+sudo groupadd GROUPNAME
+sudo mkdir -p /engage/sftp/PROJECT_NAME/GROUPNAME
+sudo chown root:GROUPNAME /engage/sftp/PROJECT_NAME/GROUPNAME
+sudo chmod 770 /engage/sftp/PROJECT_NAME/GROUPNAME
+
+sudo useradd -s /bin/nologin USERNAME
+passwd USERNAME
+sudo usermod -G GROUPNAME USERNAME
+
+
+-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x-x
+
+NOTE: 
+1. The Directory in the root partition should be root user owned.
+2. The Directory in the root partition should not be writeable for group and others.

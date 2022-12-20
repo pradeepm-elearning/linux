@@ -1,0 +1,52 @@
+CPULIMIT & TASKSET Commands
+
+Installation of cpulimit on Linux
+----------------------------------
+
+Download last stable version from here or get the latest source code from Subversion repository with this command:
+svn checkout https://cpulimit.svn.sourceforge.net/svnroot/cpulimit/trunk cpulimit
+
+cpulimit-1.1.tar.gz is downloaded
+
+Copy the Downloaded file to /opt
+cp -vr cpulimit-1.1.tar.gz /opt/
+cd /opt
+
+Untar the source File and compile the make.
+tar -xvzf cpulimit-1.1.tar.gz
+cd cpulimit-1.1
+make
+
+Executable File "cpulimit" is created in the same directory
+
+Link the cpulimit file to /usr/bin
+ln -s /opt/cpulimit-1.1/cpulimit /usr/bin/cpulimit
+
+
+TASKSET Commands
+-----------------
+Taskset command is used to set a particular program run on a particular CPU Core.
+Core starts from the value "0" to "n" depending upon the cores.
+If the CPU has 4 Cores, then the value will be 0,1,2,3
+
+taskset -c <<value of core>> <<Application/Taskname>>
+taskset -c 0 bigloop
+
+
+
+CPULIMIT Commands
+-----------------
+
+cpulimit -l <<percent>> -p <<PID>>
+cpulimit -l 20 -p 2354
+
+----------------------------------------------------------------------
+Examples of use
+Limit the process 'bigloop' by executable name to 40% CPU:
+-----------------------------------------------------------
+cpulimit --exe bigloop --limit 40
+cpulimit --exe /usr/local/bin/bigloop --limit 40
+Limit a process by PID to 55% CPU:
+cpulimit --pid 2960 --limit 55
+Launch a process by command line and limit it to 40% (in development version only!):
+cpulimit --limit 40 /etc/rc.d/rc.boinc start

@@ -1,0 +1,39 @@
+How to Install and Configure a VNC Server on RedHat Enterprise Linux (RHEL) 6
+
+1. Installation of the software
+Ensure you are logged in as 'root'
+If you have connectivity to RHN or a Satellite Server :
+# yum install tigervnc-server
+More information : How to Create a Local 'yum' Repository in RedHat Enterprise Linux (RHEL) 5 and 6
+
+2. Configure VNC password for the user(s)
+Switch user to the user you want to use for VNC :
+# su - vncuser1
+
+NOTE: Replace 'vncuser1' with the correct username
+Set the VNC password for the user:
+$ vncpasswd
+$ exit
+Repeat for each VNC user as necessary
+
+3. Configure resolution for the user(s)
+Edit '/etc/sysconfig/vncservers' with your favorite editor
+Append the following lines:
+VNCSERVERS="5:vncuser1 6:vncuser2"
+VNCSERVERARGS[5]="-geometry 1024x768"
+VNCSERVERARGS[6]="-geometry 1024x768"
+NOTE: Replace 'vncuser1' and 'vncuser2' with the correct usernames. You can add more users as needed. In addition, you can change the resolution value as needed.
+
+4. Start the VNC server
+Start the service :
+# service vncserver start
+Ensure service is started on reboots :
+# chkconfig vncserver on
+
+5. Configure the firewall
+# iptables -I INPUT -m state --state NEW -p tcp --destination-port 5901 -j ACCEPT
+# iptables -I INPUT -m state --state NEW -p tcp --destination-port 5902 -j ACCEPT
+	.  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .
+# iptables -I INPUT -m state --state NEW -p tcp --destination-port 5909 -j ACCEPT
+NOTE : Each user requires an additional firewall port opened starting at 5901. Because we added two users above, we need to open two ports.
+# service iptables save

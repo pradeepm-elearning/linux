@@ -165,3 +165,19 @@ keytool -import -alias tomcat -keystore  "/spark/jdk1.8.0_60/jre/lib/security/ca
 Exception in thread "main" java.lang.NoSuchMethodError: 'com.mongodb.connection.ConnectionPoolSettings$Builder com.mongodb.connection.ConnectionPoolSettings$Builder.maxWaitQueueSize(int)'
     at com.mongodb.MongoClientOptions.<init>(MongoClientOptions.java:148)
     at com.mongodb.MongoClientOptions.<init>(MongoClientOptions.java:56)
+	
+	
+
+---------------------------------
+IMPORTING CER SSL FILE TO CACERTS
+---------------------------------
+EXCEPTION : PKIX | Invalid Certificate Error
+	
+sudo /ccengage/ccapplications/java/jdk1.8.0_60/jre/bin/keytool -importcert -file /ccengage/hoadAPIs/certs/2023-marketingcloudapis.com-certificates/device/device.marketingcloudapis.com.cer -alias sfmcssldevice -keystore /ccengage/ccapplications/java/jdk1.8.0_60/jre/lib/security/cacerts -storepass changeit
+
+
+sudo /ccengage/CCApplications/java/jdk1.8.0_60/jre/bin/keytool -list -trustcacerts -keystore /etc/pki/java/cacerts -storepass changeit
+
+sudo /ccengage/CCApplications/java/jdk1.8.0_60/jre/bin/keytool -delete -alias sfmcsslcert2 -keystore /etc/pki/java/cacerts -storepass changeit
+
+sudo /ccengage/CCApplications/java/jdk1.8.0_60/jre/bin/keytool -import -alias sfmcsslcert3 -file /ccengage/MobileAPIs/sfmcApi/certs/cert3.pem -keystore /etc/pki/java/cacerts

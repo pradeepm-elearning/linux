@@ -1,0 +1,322 @@
+ -------------------------------------------
+|	SYSTEM SOFTWARE INSTALLATION - UBUNTU	|
+ -------------------------------------------
+
+-----------------------------------------
+	R E S O L U T I O N   I S S U E
+-----------------------------------------
+#	AFTER INSTALLING UBUNTU, YOU WILL NOTICE THAT THE RESOLUTION IS 1024x768 & CANNOT BE INCREASED.
+#	IN SUCH CASE, USE THE BELOW COMMANDS
+sudo apt upgrade
+sudo apt update
+sudo apt install nvidia-settings
+sudo ubuntu-drivers autoinstall
+sudo init 6
+
+#---------------------------------------
+#	J A V A   J D K - 1 . 8 . 0 . 6 0
+#---------------------------------------
+JAVA_HOME=/opt/java/jdk1.8.0_60
+PATH=$PATH:$HOME/bin:$JAVA_HOME/bin
+
+JRE_HOME=/opt/java/jdk1.8.0_60/jre
+PATH=$PATH:$HOME/bin:$JRE_HOME/bin
+
+export JAVA_HOME
+export JRE_HOME
+export PATH
+
+-------------------------------------------------
+
+sudo update-alternatives --install "/usr/bin/java" "java" "/opt/java/jdk1.8.0_60/jre/bin/java" 1
+sudo update-alternatives --install "/usr/bin/javac" "javac" "/opt/java/jdk1.8.0_60/bin/javac" 1
+sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/opt/java/jdk1.8.0_60/bin/javaws" 1
+
+sudo update-alternatives --set java /opt/java/jdk1.8.0_60/jre/bin/java
+sudo update-alternatives --set javac /opt/java/jdk1.8.0_60/bin/javac
+sudo update-alternatives --set javaws /opt/java/jdk1.8.0_60/bin/javaws
+
+
+
+
+--------------------------------------------
+	ANYDESK | AUTOMATIC RESTART | UBUNTU
+--------------------------------------------
+wget -qO - https://keys.anydesk.com/repos/DEB-GPG-KEY | apt-key add -
+echo "deb http://deb.anydesk.com/ all main" > /etc/apt/sources.list.d/anydesk-stable.list
+apt update
+apt install anydesk
+
+mkdir -pv .config/autostart
+cd ~/.config/autostart 
+
+vim anydesk.desktop
+[Desktop Entry]
+Type=Application
+Exec=/usr/bin/anydesk
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[en_IN]=anydesk
+Name=anydesk
+Comment[en_IN]=
+Comment=
+
+sudo init 6
+
+ERROR : display_server_not_supported
+DESCRIPTION : After installing Anydesk on my Ubuntu 18.04 server and trying to connect from a Mac, I would get a display_server_not_supported error.
+I was able to resolve this by going into the /etc/gdm3/custom.conf file and changing:
+[daemon]
+    # Enabling automatic login
+    AutomaticLoginEnable=true
+    AutomaticLogin=$USERNAME
+After rebooting the Ubuntu server, Anydesk now connects and shows the login screen and I can login just fine.
+
+anydesk --get-id
+echo PASSWORD | sudo anydesk --set-password
+
+OR
+
+sudo apt-get purge anydesk
+sudo apt-get autoclean
+sudo apt-get autoremove
+sudo apt update
+sudo apt list --upgradable
+sudo apt upgrade -y
+https://download.anydesk.com/linux/anydesk_4.0.0-1_amd64.deb
+sudo dpkg -i anydesk_4.0.0-1_amd64.deb
+sudo apt install -f
+sudo apt update
+anydesk
+
+--------------------------------------------
+	DISABLE SLEEP AND HIBERNATE | UBUNTU
+--------------------------------------------
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+
+
+
+--------------------------------------------
+	ECLIPSE INSTALLATION | UBUNTU
+--------------------------------------------
+sudo mkdir -pv /opt/eclipse/
+sudo tar -xvzf eclipse-jee-oxygen-3a-linux-gtk-x86_64.tar.gz
+sudo mv -v eclipse eclipse-jee-oxygen-3a/
+sudo chown -R USERNAME:USERNAME /opt/eclipse
+
+vim ~/Desktop/eclipse.desktop 
+OR
+sudo vim /usr/share/applications/eclipse.desktop
+
+[Desktop Entry]
+Type=Application
+Terminal=false
+Encoding=UTF-8
+Version=1.1
+Name=Eclipse IDE for Java Developers - 2021-09
+Exec=env GTK_IM_MODULE=ibus /opt/eclipse/eclipse-jee-oxygen-3a/eclipse
+Categories=Development;IDE;
+Icon=/opt/eclipse/eclipse-jee-oxygen-3a/icon.xpm
+
+chmod +x ~/Desktop/eclipse.desktop
+
+If that doesn’t work, right-click the icon on the Desktop and select Allow Launching.
+
+
+
+
+------------------
+	CHROME
+------------------
+mkdir -pv /opt/google
+cd /opt/google
+sudo wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo dpkg -i google-chrome-stable_current_amd64.deb
+
+
+
+-------------------
+	FORTICLIENT
+-------------------
+https://www.fortinet.com/support/product-downloads
+deb file has to be downloaded
+sudo mkdir -pv /opt/forticlient
+sudo mv -v ~/Downloads/forticlient_vpn_7.0.0.0018_amd64.deb /opt/forticlient
+sudo dpkg -i forticlient_vpn_7.0.0.0018_amd64.deb
+
+
+
+-------------------
+	FORCEPOINT-VPN
+-------------------
+DOWNLOAD THE VPN (PRATHIBA SYSTEM)
+deb file has to be downloaded
+sudo mkdir -pv /opt/forcepoint_vpn_client
+sudo mv -v /tmp/ForcepointVPNClientLinux.zip /opt/forcepoint_vpn_client/
+cd /opt/forcepoint_vpn_client
+sudo unzip ForcepointVPNClientLinux.zip
+sudo dpkg -i forcepoint-client_2.5.0+bullseye_amd64.deb
+sudo forcepoint-client --disable-cfg-suggestion connect.luluindia.com 8443 -u USERNAME
+
+
+------------------
+	NOTEPADQQ
+------------------
+#sudo add-apt-repository ppa:notepadqq-team/notepadqq - ERROR
+sudo apt install notepadqq
+
+
+
+----------------
+	POSTMAN
+----------------
+sudo mkdir -pv /opt/postman
+cd /opt/postman
+sudo wget https://dl.pstmn.io/download/latest/linux64
+sudo mv -v linux64 postman-9.15.2-linux-x64.tar.gz
+sudo tar -xvf postman-9.15.2-linux-x64.tar.gz
+sudo mv -v Postman/ postman-9.15.2
+sudo ln -s /opt/postman/postman-9.15.2/app/Postman /usr/bin/Postman
+sudo chown -R USERNAME:USERNAME /opt/postman
+su - USERNAME
+echo 'export PATH="$PATH:/usr/bin/Postman"' >> ~/.bashrc
+
+sudo vim /usr/share/applications/Postman.desktop
+[Desktop Entry]
+Name=Postman API Tool
+GenericName=Postman
+Comment=Testing API
+Exec=/usr/bin/Postman
+Terminal=false
+X-MultipleArgs=false
+Type=Application
+Icon=/opt/postman/postman-9.15.2/app/resources/app/assets/icon.png
+StartupWMClass=Postman
+StartupNotify=true
+
+
+-----------------
+	FILEZILLA
+-----------------
+sudo mkdir -pv /opt/filezilla
+cd /opt/filezilla
+sudo wget "https://dl4.cdn.filezilla-project.org/client/FileZilla_3.59.0_x86_64-linux-gnu.tar.bz2?h=uYn3sL3oG-AGWdX9FOFWCQ&x=1652784531"
+sudo mv -v FileZilla* FileZilla_3.58.0_x86_64-linux-gnu.tar.bz
+sudo tar -xvf FileZilla_3.58.0_x86_64-linux-gnu.tar.bz
+sudo ln -s /opt/filezilla/FileZilla3/bin/filezilla /usr/bin/filezilla
+
+sudo vim /usr/share/applications/filezilla.desktop
+[Desktop Entry]
+Name=FileZilla
+GenericName=FTP Client
+GenericName[da]=FTP-klient
+GenericName[de]=FTP-Client
+GenericName[fr]=Client FTP
+Comment=Download and upload files via FTP, FTPS and SFTP
+Comment[da]=Download og upload filer via FTP, FTPS og SFTP
+Comment[de]=Dateien über FTP, FTPS und SFTP übertragen
+Comment[fr]=Transférer des fichiers via FTP, FTPS et SFTP
+Exec=/usr/bin/filezilla
+Terminal=false
+Icon=/opt/filezilla/FileZilla3/share/icons/hicolor/480x480/apps/filezilla.png
+Type=Application
+Categories=Network;FileTransfer;
+Version=1.0
+
+
+
+
+
+-----------------------
+	MYSQL WORKBENCH
+------------------------
+DOWNLOAD DEB FILE FROM OFFICIAL MYSQL SITE
+sudo mkdir -pv /opt/mysql_workbench
+sudo mv -v ~/Downloads/mysql-apt-config_0.8.22-1_all.deb /opt/mysql_workbench/
+cd /opt/mysql_workbench/
+sudo dpkg -i mysql-apt-config_0.8.22-1_all.deb
+CLICK OK
+sudo apt-get update
+sudo apt-get install mysql-workbench-community
+
+
+
+
+
+GIT
+ROBO 3T
+MELD
+SUBLIME-TEXT
+
+
+
+
+
+DNS ISSUE
+-----------------------------------------------------------------------------------------
+apt-get update fails to fetch files, "Temporary failure resolving …" error
+https://askubuntu.com/questions/91543/apt-get-update-fails-to-fetch-files-temporary-failure-resolving-error
+-----------------------------------------------------------------------------------------
+
+-----------------------------------------------------------------------------------------
+DNS ISSUE
+https://askubuntu.com/questions/1314076/how-to-set-dns-and-edit-etc-resolv-conf-on-ubuntu-server-16-04
+------------------------------------------------------------------------------------------
+
+
+--------------------------------------------------
+	O P E N   V P N   I N S T A L L A T I O N
+--------------------------------------------------
+sudo su -
+apt install apt-transport-https
+curl -fsSL https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub | gpg --dearmor > /etc/apt/trusted.gpg.d/openvpn-repo-pkg-keyring.gpg
+curl -fsSL https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-focal.list >/etc/apt/sources.list.d/openvpn3.list
+apt update
+apt install openvpn3
+
+Supported distributions:
++---------------------------+---------------------------+-------------------+---------------+
+| Distribution	| Release	| Release name ($DISTRO)	| Architecture		| DCO Support	|
++---------------+-----------+---------------------------+-------------------+---------------+
+| Debian		| 9			| stretch				 	| amd64				|	-			|
+| Debian		| 10		| buster				 	| amd64, arm64*		|	-			|
+| Debian		| 11		| bullseye				 	| amd64, arm64*		|	-			|
+| Ubuntu		| 18.04		| bionic				 	| amd64, arm64*		|	-			|
+| Ubuntu		| 20.04		| focal					 	| amd64, arm64*		|	yes*		|
+| Ubuntu		| 21.10		| impish				 	| amd64, arm64*		|	yes*		|
+| Ubuntu		| 22.04		| jammy					 	| amd64, arm64*		|	yes*		|
++---------------+-----------+---------------------------+-------------------+---------------+
+[*] Please note that both arm64 platform support and the Data Channel Offload (DCO) feature are currently considered a tech-preview for the time being
+
+
+START VPN
+openvpn3 session-start --config ~/Documents/Lulu_Mall_India/ovpn_files/client-user1.ovpn
+
+FIND THE PATH DETAILS
+openvpn3 sessions-list
+COPY THE "PATH" FROM THE ABOVE OUTPUT
+
+STOP VPN
+openvpn3 session-manage --session-path <<PATH>> --disconnect
+
+
+----------------------------------------------------------
+	O P E N V P N 3   S Y S T E M D   C R E A T I O N
+----------------------------------------------------------
+CREATE A START-STOP SCRIPT OF OPENVPN
+COPY THE START-STOP SCRIPT TO /usr/bin DIRECTORY
+
+vim /etc/systemd/system/lulu_uat_richard.service
+[Unit]
+Description=Lulu UAT OpenVPN3
+
+[Service]
+Type=simple
+ExecStart=/bin/bash /usr/bin/lulu_uat_richard start
+ExecStop=/bin/bash /usr/bin/lulu_uat_richard stop
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

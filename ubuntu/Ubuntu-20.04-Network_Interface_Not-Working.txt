@@ -1,0 +1,7 @@
+Ubuntu 20.04 network no longer working
+
+sudo ip link set enp3s0 down
+sudo ip addr flush enp3s0 
+sudo ip link set enp3s0 up
+sudo dhclient -r
+sudo dhclient

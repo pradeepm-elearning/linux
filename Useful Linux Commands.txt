@@ -89,3 +89,7 @@ cat /proc/<<PID>>/limits | grep "Max open files"
 krakend soft     nofile         65535
 krakend hard     nofile         65535
 
+--------------------------------------------
+HIDDEN FILE/FOLDER SIZE
+--------------------------------------------
+du -hs .[^.]*

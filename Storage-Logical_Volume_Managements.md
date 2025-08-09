@@ -48,5 +48,25 @@ LVM is fantastic for managing a system, but remember that the more drives you ma
 
 
 
+-x-x-x-x-x-x-x
 
+lvmdiskscan
+
+Physical Volume
+----------------
+pvscan
+pvcreate /dev/sda1
+
+Volume Groups
+--------------
+vgscan
+vgcreate ccengage_vg /dev/sda1 /dev/sdb5
+
+
+Logical Volumes
+---------------
+lvscan
+lvcreate -L 10G ccengage_vg
+
+resize2fs /dev/vg1/lv1
 
